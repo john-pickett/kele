@@ -26,6 +26,18 @@ class Kele
     @mentor_data = JSON.parse(response.body)
   end
 
+  def get_messages(page)
+    response = self.class.get(set_uri("message_threads"), { headers: { authorization: @auth_token }, body: {"page": "#{page}" }} )
+    @messages = JSON.parse(response.body)
+  end
+
+  def create_message(from, to, message)
+    @from = from
+    @to = to
+    @message = message
+    response = self.class.post(set_uri("messages"), { headers: { authorization: @auth_token }, query: { sender: @from , recipient_id: @to , "stripped-text" => @message  }})
+
+  end
 
   private
 
@@ -34,9 +46,7 @@ class Kele
   end
 
   def bloc_auth
-    { headers: {
-      authorization: @auth_token
-      }}
+    { headers: { authorization: @auth_token }}
   end
 
 end
